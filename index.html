@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fishcord</title>
+</head>
+
+<body>
+  <canvas id="fishcord" height="225" width="400"></canvas>
+  <table>
+    <tr>
+      <td class="label"><label for="title">제목</label></td>
+      <td><input type="text" id="title"></td>
+    </tr>
+    <tr>
+      <td class="label"><label for="size">용량</label></td>
+      <td><input type="text" id="size"></td>
+    </tr>
+    <tr>
+      <td class="label"><label for="thumb">썸네일</label></td>
+      <td><input type="text" id="thumb"></td>
+      <td class="label"><label for="thumb">대부분의 이미지는 CORS 문제로 작동하지 않습니다. <a href="https://imgbb.com"
+            target="_blank">ImgBB</a> 또는 <a
+            href="https://developer.mozilla.org/ko/docs/Web/HTTP/Basics_of_HTTP/Data_URIs" target="_blank">Data URI</a>를
+          사용하는걸 추천합니다.</label></td>
+    </tr>
+  </table>
+  <div style="width: 390px;">
+    <button>이미지로 저장</button>
+  </div>
+  <div id="player">
+    <div class="imageWrapper">
+      <div class="wrapperPaused">
+        <div class="metadata">
+          <div class="metadataContent">
+            <div class="metadataName">fishcord.mp4</div>
+            <div class="metadataSize">100 MB</div>
+          </div>
+          <a class="metadataDownload">
+            <svg class="metadataIcon-2FyCKU" aria-hidden="false" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
+                d="M16.293 9.293L17.707 10.707L12 16.414L6.29297 10.707L7.70697 9.293L11 12.586V2H13V12.586L16.293 9.293ZM18 20V18H20V20C20 21.102 19.104 22 18 22H6C4.896 22 4 21.102 4 20V18H6V20H18Z">
+              </path>
+            </svg>
+          </a>
+        </div>
+        <img src="https://i.ibb.co/2FHsnyw/image.png">
+        <div class="playCenter">
+          <div class="wrapper">
+            <div class="iconWrapper" role="button" tabindex="0">
+              <svg class="iconPlay" aria-hidden="false" width="16" height="16" viewBox="0 0 24 24">
+                <polygon fill="currentColor" points="0 0 0 14 11 7" transform="translate(7 5)"></polygon>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="playPausePop">
+          <svg class="playPausePopIcon-p-D8VH" aria-hidden="false" width="16" height="16" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M0,14 L4,14 L4,0 L0,0 L0,14 L0,14 Z M8,0 L8,14 L12,14 L12,0 L8,0 L8,0 Z"
+              transform="translate(6 5)"></path>
+          </svg>
+        </div>
+      </div>
+      <style>
+        * {
+          font-family: Whitney, "Apple SD Gothic Neo", NanumBarunGothic, "맑은 고딕", "Malgun Gothic", Gulim, 굴림, Dotum, 돋움, "Helvetica Neue", Helvetica, Arial, sans-serif;
+          color: #fff;
+        }
+
+        a {
+          color: #00b0f4;
+          text-decoration: none;
+        }
+
+        a:focus {
+          outline: none;
+        }
+
+        body {
+          background-color: #36393f;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+        }
+
+        canvas {
+          width: 400px;
+          height: 225px;
+        }
+
+        a,
+        div {
+          margin: 0;
+          padding: 0;
+          border: 0;
+          font-weight: inherit;
+          font-style: inherit;
+          font-family: inherit;
+          font-size: 100%;
+          vertical-align: baseline;
+        }
+
+        .imageWrapper {
+          user-select: text;
+          overflow: hidden;
+          border-radius: 3px;
+          display: block;
+          position: relative;
+          text-indent: 0;
+          width: 400px;
+          height: 225px;
+        }
+
+        .wrapperPaused {
+          width: 400px;
+          height: 225px;
+          background-color: #202225;
+          position: relative;
+          overflow: hidden;
+          border-radius: 3px;
+          color: #fff;
+          user-select: none;
+          outline: 0;
+          -webkit-box-direction: normal;
+        }
+
+        .metadata {
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+          position: absolute;
+          top: -10px;
+          left: 0;
+          right: 0;
+          height: 80px;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-align: start;
+          -ms-flex-align: start;
+          align-items: flex-start;
+          background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, .9));
+          padding: 22px 12px 12px;
+          z-index: 1;
+        }
+
+        .metadataContent {
+          -webkit-box-flex: 1;
+          flex: 1 1 auto;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .metadataName {
+          font-weight: 500;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          font-size: 16px;
+          line-height: 20px;
+        }
+
+        .metadataSize {
+          font-size: 12px;
+          line-height: 16px;
+          opacity: .7;
+          font-weight: 500;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          outline: 0;
+        }
+
+        .metadataDownload {
+          -webkit-box-flex: 0;
+          flex: 0 0 auto;
+          opacity: .6;
+        }
+
+        .metadataDownload svg {
+          width: 24px;
+          height: 25px;
+          overflow: hidden;
+        }
+
+        img {
+          position: relative;
+          display: block;
+          color: #fff;
+          user-select: none;
+          object-fit: contain;
+          border-radius: 3px;
+          height: 225px;
+          width: 400px;
+        }
+
+        .playCenter {
+          position: absolute;
+          pointer-events: none;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          z-index: 1;
+          -webkit-box-pack: center;
+          justify-content: center;
+          display: flex;
+          align-items: center;
+        }
+
+        .playCenter .wrapper {
+          box-sizing: border-box;
+          display: flex;
+          padding: 12px;
+          height: 48px;
+          border-radius: 24px;
+          background-color: rgba(0, 0, 0, .6);
+          -webkit-box-flex: 0;
+          flex: 0 0 auto;
+          pointer-events: none;
+          outline: 0;
+        }
+
+        .iconWrapper {
+          pointer-events: auto;
+          -webkit-box-flex: 0;
+          flex: 0 0 auto;
+          opacity: .6;
+          cursor: pointer;
+          transition: opacity .25s, color .25s;
+          display: flex;
+          -webkit-box-align: center;
+          align-items: center;
+          outline: 0;
+        }
+
+        svg.iconPlay {
+          margin-left: 1px;
+          margin-right: -1px;
+          display: block;
+          width: 24px;
+          height: 24px;
+          overflow: hidden;
+          pointer-events: auto;
+          cursor: pointer;
+        }
+
+        .playPausePop {
+          top: 50%;
+          left: 50%;
+          margin-left: -23px;
+          margin-top: -23px;
+          padding: 12px;
+          width: 24px;
+          height: 24px;
+          background-color: rgba(0, 0, 0, .6);
+          border-radius: 50%;
+          position: absolute;
+          pointer-events: none;
+          outline: 0;
+          opacity: 0;
+        }
+
+        #player {
+          display: none;
+        }
+
+        table {
+          margin-top: 1rem;
+          width: 400px;
+        }
+
+        tr {
+          display: flex;
+          flex-direction: column;
+        }
+
+        td.label label {
+          color: #8e9297;
+          font-size: 12px;
+          line-height: 16px;
+          font-weight: 600;
+          text-transform: uppercase;
+          -webkit-box-flex: 1;
+          flex: 1;
+          cursor: default;
+        }
+
+        input {
+          color: #dcddde;
+          background-color: rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(0, 0, 0, 0.3);
+          padding: 10px;
+          border-radius: 3px;
+          font-size: 1rem;
+          transition: border-color .2s ease-in-out;
+          width: calc(100% - 22px);
+        }
+
+        input:focus {
+          outline: none;
+          border-color: #7289da !important;
+        }
+
+        input:hover {
+          border-color: #040405;
+        }
+
+        button {
+          color: #fff;
+          background-color: #7289da !important;
+          height: 32px;
+          min-width: 60px;
+          min-height: 32px;
+          transition: background-color .17s ease, color .17s ease;
+          position: relative;
+          display: flex;
+          -webkit-box-pack: center;
+          justify-content: center;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          user-select: none;
+          background: none;
+          border: none;
+          border-radius: 3px;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 16px;
+          padding: 2px 16px;
+          margin-top: .5rem;
+          cursor: pointer;
+          margin-left: auto;
+        }
+
+        button:hover {
+          background-color: #677bc4;
+        }
+      </style>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/rasterizehtml@1.3.0/dist/rasterizeHTML.allinone.min.js"></script>
+  <script>
+    rasterizeHTML.drawHTML(document.querySelector('#player .imageWrapper').innerHTML, document.querySelector(
+      '#fishcord'))
+    document.querySelector('#title').addEventListener('keyup', e => {
+      document.querySelector('.metadataName').innerHTML = e.target.value
+      rasterizeHTML.drawHTML(document.querySelector('#player .imageWrapper').innerHTML, document.querySelector(
+        '#fishcord'))
+    })
+    document.querySelector('#size').addEventListener('keyup', e => {
+      document.querySelector('.metadataSize').innerHTML = e.target.value
+      rasterizeHTML.drawHTML(document.querySelector('#player .imageWrapper').innerHTML, document.querySelector(
+        '#fishcord'))
+    })
+    document.querySelector('#thumb').addEventListener('keyup', e => {
+      document.querySelector('img').src = e.target.value
+      rasterizeHTML.drawHTML(document.querySelector('#player .imageWrapper').innerHTML, document.querySelector(
+        '#fishcord'))
+    })
+    document.querySelector('button').addEventListener('click', () => {
+      let canvas = document.querySelector('#fishcord')
+      context = canvas.getContext('2d')
+      let data = canvas.toDataURL('image/png')
+      let a = document.createElement('a')
+      a.download = 'fishcord.png'
+      a.href = data
+      a.click()
+    })
+  </script>
+</body>
+
+</html>
